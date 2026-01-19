@@ -209,7 +209,7 @@ const flakes = Array.from({ length: 220 }, () => ({
   x: Math.random() * canvas.width,
   y: Math.random() * canvas.height,
   r: Math.random() * 3 + 1,
-  d: Math.random() * 2.2 + 1
+  d: Math.random() * 1.4 + 0.6
 }));
 
 function snow() {
@@ -221,7 +221,6 @@ function snow() {
     ctx.moveTo(f.x, f.y);
     ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
     f.y += f.d;
-    f.x += 0.35;
     if (f.y > canvas.height) {
       f.y = -10;
       f.x = Math.random() * canvas.width;
