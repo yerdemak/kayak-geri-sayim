@@ -60,7 +60,6 @@ canvas {
   opacity: 0.9;
 }
 
-/* === AZ KALDI AMK ÖZEL === */
 .highlight {
   font-size: clamp(1.9rem, 4.8vw, 2.8rem);
   font-weight: 900;
@@ -119,6 +118,16 @@ canvas {
   opacity: 0.6;
   z-index: 2;
 }
+
+.timer div {
+  color: #ff3b3b;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+}
+
+.highlight {
+  color: #F9F8F6;
+}
+
 </style>
 </head>
 
@@ -138,7 +147,7 @@ canvas {
     <div id="seconds">-- Saniye</div>
   </div>
 
-  <div class="info">6 Şubat 22:00 – 23:59 Baz Alınmıştır.</div>
+  <div class="info">6 Şubat 2026 – Saat 21:30 Baz Alınmıştır</div>
 </div>
 
 <div class="container" id="finalScreen">
@@ -162,7 +171,8 @@ canvas {
 </audio>
 
 <script>
-const startTime = new Date("2026-02-06T22:00:00");
+/* === YOLA ÇIKIŞ: 6 ŞUBAT 2026 - 21:00 === */
+const startTime = new Date("2026-02-06T21:30:00");
 
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
