@@ -56,8 +56,16 @@ canvas {
 
 .subtitle {
   font-size: 1rem;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   opacity: 0.9;
+}
+
+/* === AZ KALDI AMK ÖZEL === */
+.highlight {
+  font-size: clamp(1.9rem, 4.8vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
 }
 
 .timer div {
@@ -121,7 +129,7 @@ canvas {
 <div class="container" id="countdownContainer">
   <div class="location">Kayseri Erciyes Kayak Merkezi</div>
   <div class="subtitle">Yola çıkmaya kalan süre</div>
-   <div class="subtitle">AZ KALDI AMK</div>
+  <div class="subtitle highlight">AZ KALDI AMK</div>
 
   <div class="timer">
     <div id="days">-- Gün</div>
@@ -154,7 +162,6 @@ canvas {
 </audio>
 
 <script>
-/* === TARİH === */
 const startTime = new Date("2026-02-06T22:00:00");
 
 const daysEl = document.getElementById("days");
@@ -168,7 +175,6 @@ const finalScreen = document.getElementById("finalScreen");
 const wind = document.getElementById("windSound");
 wind.volume = 0.25;
 
-/* === GERİ SAYIM === */
 function updateCountdown() {
   const now = new Date();
   let diff = startTime - now;
@@ -176,7 +182,7 @@ function updateCountdown() {
   if (diff <= 0) {
     countdownContainer.style.display = "none";
     finalScreen.style.display = "block";
-    wind.volume = 0.45; // YOLA ÇIKILINCA SES ARTIYOR
+    wind.volume = 0.45;
     wind.play();
     return;
   }
@@ -195,7 +201,7 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-/* === KAR (YOĞUN + BİRAZ DAHA HIZLI) === */
+/* === KAR === */
 const canvas = document.getElementById("snow");
 const ctx = canvas.getContext("2d");
 
@@ -230,9 +236,8 @@ function snow() {
 
   ctx.fill();
 }
-setInterval(snow, 30);
+setInterval(snow, 45);
 
-/* === YANDEX FALLBACK === */
 function fallbackMap(e) {
   setTimeout(() => {
     window.location.href =
@@ -243,4 +248,3 @@ function fallbackMap(e) {
 
 </body>
 </html>
-
