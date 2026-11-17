@@ -476,7 +476,7 @@ resizeSnow();
 snow();
 
 
-// Rüzgâr sesi (Tok dağ uğultusu ve doğal dalgalanma efekti)
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi (Safari & Mobil Uyumlu)
 let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
 
 $("soundButton").addEventListener("click", async () => {
@@ -485,37 +485,36 @@ $("soundButton").addEventListener("click", async () => {
 
     if (!audioContext) {
 
-      audioContext = new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioContext = new AudioContextClass();
 
       const bufferSize = audioContext.sampleRate * 5;
-
       const buffer = audioContext.createBuffer(
         1, bufferSize, audioContext.sampleRate
       );
 
       const data = buffer.getChannelData(0);
 
+      // Daha yoğun ve hırçın rüzgâr gürültüsü
       for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * 0.5;
+        data[i] = (Math.random() * 2 - 1) * 0.8;
       }
 
       windSource = audioContext.createBufferSource();
       windSource.buffer = buffer;
       windSource.loop = true;
 
+      // Fırtına karakteri için filtre frekansını biraz açtık ve rezonans ekledik
       const filter = audioContext.createBiquadFilter();
       filter.type = "lowpass";
-      filter.frequency.value = 180; // Derin ve tok dağ uğultusu
-      filter.Q.value = 3;
+      filter.frequency.value = 320; 
+      filter.Q.value = 4.5;
 
-      // Rüzgâr dalgalanma efekti (LFO)
+      // Güçlü rüzgâr dalgalanmaları (şiddetli fırtına etkisi için LFO)
       lfo = audioContext.createOscillator();
-      lfo.frequency.value = 0.15;
+      lfo.frequency.value = 0.22; // Dalgalanma hızı
       lfoGain = audioContext.createGain();
-      lfoGain.gain.value = 80;
+      lfoGain.gain.value = 180; // Geniş dalgalanma aralığı
 
       lfo.connect(lfoGain);
       lfoGain.connect(filter.frequency);
@@ -531,14 +530,17 @@ $("soundButton").addEventListener("click", async () => {
       windSource.start();
     }
 
-    await audioContext.resume();
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
 
     soundOn = !soundOn;
 
+    // Fırtına ses seviyesi daha yüksek ve belirgin hale getirildi
     windGain.gain.setTargetAtTime(
-      soundOn ? 0.25 : 0,
+      soundOn ? 0.65 : 0, 
       audioContext.currentTime,
-      0.5
+      0.3
     );
 
     $("soundButton").textContent =
@@ -547,7 +549,7 @@ $("soundButton").addEventListener("click", async () => {
   } catch (e) {
 
     $("soundButton").textContent = "Ses kullanılamıyor";
-    console.error("Ses hatası:", e);
+    console.error("Fırtına ses hatası:", e);
 
   }
 
