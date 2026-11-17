@@ -368,7 +368,7 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* Orijinal Sağ Üst Sesi Aç Butonu */
+/* Sağ Üstteki Orijinal Sesi Aç Butonu ve Üst Orta Uyarı Kutusu */
 .sound {
   position: fixed;
   z-index: 4;
@@ -388,6 +388,25 @@ h1 {
 
 .sound:hover {
   background: rgba(255,255,255,.15);
+}
+
+#silentBanner {
+  position: fixed;
+  z-index: 5;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 30px;
+  padding: 8px 16px;
+  color: white;
+  background: rgba(0,0,0,.35);
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  display: none;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 footer {
@@ -423,6 +442,9 @@ footer {
 <button class="sound" id="soundButton" type="button">
   ♫ Sesi aç
 </button>
+
+<!-- En üstte en ortada çıkacak uyarı banner'ı -->
+<div id="silentBanner">🔕 Telefonu Sessiz Moddan Çıkarın</div>
 
 <main class="overlay">
 
@@ -466,7 +488,7 @@ footer {
 
     <!-- Hava Durumunun Altında Tam Ortada Yer Alan Masraf Butonu -->
     <div>
-      <button class="center-expense-btn" id="openExpenseModal" type="button">💰 Harcama Ekle</button>
+      <button class="center-expense-btn" id="openExpenseModal" type="button">💰 Masraf Hesapla</button>
     </div>
 
   </section>
@@ -495,7 +517,7 @@ footer {
 <div class="modal-overlay" id="expenseModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>HARCAMA / BORÇ PLANI</h3>
+      <h3>Kastamonu Ski Community - Ortak Bütçe</h3>
       <button class="close-btn" id="closeExpenseModal">&times;</button>
     </div>
 
@@ -762,9 +784,8 @@ resizeSnow();
 snow();
 
 
-// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, Buton İçinde 3 Saniyelik Geçici Sessiz Mod Uyarısı
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, Ses Açıldığında Butonun Gizlenip Üst Ortada Uyarı Çıkması
 let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
-let buttonTimeout;
 
 $("soundButton").addEventListener("click", async () => {
   try {
@@ -821,18 +842,15 @@ $("soundButton").addEventListener("click", async () => {
     );
 
     const btn = $("soundButton");
+    const banner = $("silentBanner");
 
     if (soundOn) {
-      btn.textContent = "🔕 Sessiz moddaysa çıkarın";
-      
-      clearTimeout(buttonTimeout);
-      buttonTimeout = setTimeout(() => {
-        if (soundOn) {
-          btn.textContent = "♫ Sesi kapat";
-        }
-      }, 3000);
+      btn.style.display = "none";      // Sesi aç butonunu gizle
+      banner.style.display = "block";  // En üst ortada uyarıyı göster
     } else {
+      btn.style.display = "inline-block";
       btn.textContent = "♫ Sesi aç";
+      banner.style.display = "none";
     }
 
   } catch (e) {
