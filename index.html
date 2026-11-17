@@ -80,7 +80,7 @@ h1 {
   letter-spacing: 1.5px;
 }
 
-/* Sayaç Stilleri (Eski yatay yapı, etiketler tam altta ve ortada) */
+/* Sayaç Stilleri */
 .countdown {
   display: flex;
   flex-direction: column;
@@ -98,7 +98,7 @@ h1 {
 }
 
 .number {
-  color: var(--jersey-blue); /* Forma rengi sayılar */
+  color: var(--jersey-blue);
   font-size: clamp(38px, 7vw, 62px);
   line-height: 1;
   font-weight: 900;
@@ -161,7 +161,7 @@ h1 {
   margin-top: 2px;
 }
 
-/* Hava Durumunun Altında Tam Ortada Yer Alan Masraf Butonu */
+/* Hava Durumunun Altındaki Ortalanmış Masraf Butonu */
 .center-expense-btn {
   display: inline-block;
   margin-top: 10px;
@@ -462,7 +462,7 @@ footer {
 
     <p class="subtitle">YOLA ÇIKMAYA KALAN SÜRE</p>
 
-    <!-- Eski Yapı Sayaç (Etiketler sayıların hemen altında ve ortada) -->
+    <!-- Sayaç -->
     <div class="countdown" aria-live="off">
       <div class="unit">
         <span class="number" id="days">000</span>
@@ -490,7 +490,7 @@ footer {
       </div>
     </div>
 
-    <!-- Hava Durumunun Altında Tam Ortada Yer Alan Masraf Butonu -->
+    <!-- Masraf Butonu -->
     <div>
       <button class="center-expense-btn" id="openExpenseModal" type="button">💰 Masraf Hesapla</button>
     </div>
@@ -517,7 +517,7 @@ footer {
 
 </main>
 
-<!-- Masraf Modalı (Şeffaf Açılır Pencere) -->
+<!-- Masraf Modalı -->
 <div class="modal-overlay" id="expenseModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -595,38 +595,40 @@ window.addEventListener("click", (e) => {
   if (e.target === $("expenseModal")) $("expenseModal").style.display = "none";
 });
 
-// BULUT SENKRONİZASYON ALTYAPISI (JSONBin.io Ortak Bütçe Alanı)
-const BIN_ID = "679c235be41b4d34e47c1f8a";
+/* ORTAK BULUT SENKRONİZASYON MOTORU (Şifresiz & Anlık Senkronize) */
+const API_URL = "https://jsonbin.org/yerdemak_ski_expenses_2027/expenses"; 
+// Her iki cihazın da (PC ve Telefon) ortak okuyup yazacağı güvenli ortak uç nokta
 let expenses = [];
 
 async function fetchExpenses() {
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      headers: { "X-Master-Key": "$2a$10$WqD6v..." }
-    });
-    const data = await res.json();
-    expenses = data.record.expenses || [];
-    renderExpenses();
+    const res = await fetch(API_URL);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        expenses = data;
+        renderExpenses();
+        return;
+      }
+    }
   } catch (err) {
-    expenses = JSON.parse(localStorage.getItem("ski_expenses")) || [];
-    renderExpenses();
+    // Bulut erişilemezse lokal hafızayı yedek al
   }
+  expenses = JSON.parse(localStorage.getItem("ski_expenses")) || [];
+  renderExpenses();
 }
 
 async function saveExpensesToCloud() {
   renderExpenses();
   localStorage.setItem("ski_expenses", JSON.stringify(expenses));
   try {
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key": "$2a$10$WqD6v..."
-      },
-      body: JSON.stringify({ expenses: expenses })
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(expenses)
     });
   } catch (err) {
-    console.error("Buluta kaydedilemedi, lokal yedek kullanılıyor.");
+    console.error("Buluta yazılamadı.");
   }
 }
 
@@ -730,8 +732,9 @@ function calculateSettlement() {
   $("settlementText").innerHTML = resultHtml;
 }
 
+// Sayfa ilk açıldığında verileri buluttan çek ve her 3 saniyede bir otomatik senkronize et
 fetchExpenses();
-setInterval(fetchExpenses, 10000);
+setInterval(fetchExpenses, 3000);
 
 
 // Canlı 6 Günlük Hava Durumu Çekme (Open-Meteo API)
