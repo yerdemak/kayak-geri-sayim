@@ -368,7 +368,7 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* Sağ Üstteki Orijinal Sesi Aç Butonu ve Üst Orta Uyarı Kutusu */
+/* Orijinal Sağ Üst Sesi Aç Butonu ve Üst Orta Uyarı Kutusu */
 .sound {
   position: fixed;
   z-index: 4;
@@ -407,6 +407,7 @@ h1 {
   display: none;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  transition: opacity 0.5s ease;
 }
 
 footer {
@@ -443,7 +444,7 @@ footer {
   ♫ Sesi aç
 </button>
 
-<!-- En üstte en ortada çıkacak uyarı banner'ı -->
+<!-- En üstte en ortada çıkacak uyarı banner'ı (3 sn sonra kaybolur) -->
 <div id="silentBanner">🔕 Telefonu Sessiz Moddan Çıkarın</div>
 
 <main class="overlay">
@@ -784,8 +785,9 @@ resizeSnow();
 snow();
 
 
-// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, Ses Açıldığında Butonun Gizlenip Üst Ortada Uyarı Çıkması
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, 3 Saniye Sonra Otomatik Kaybolan Üst Orta Uyarı Banner'ı
 let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
+let bannerTimeout;
 
 $("soundButton").addEventListener("click", async () => {
   try {
@@ -845,12 +847,22 @@ $("soundButton").addEventListener("click", async () => {
     const banner = $("silentBanner");
 
     if (soundOn) {
-      btn.style.display = "none";      // Sesi aç butonunu gizle
-      banner.style.display = "block";  // En üst ortada uyarıyı göster
+      btn.textContent = "♫ Sesi kapat";
+      
+      // Üst ortada banner'ı göster
+      banner.style.display = "block";
+      banner.style.opacity = "1";
+
+      clearTimeout(bannerTimeout);
+      bannerTimeout = setTimeout(() => {
+        banner.style.opacity = "0";
+        setTimeout(() => { banner.style.display = "none"; }, 500); // Yumuşak kapanış için
+      }, 3000); // 3 saniye sonra kaybolur
+
     } else {
-      btn.style.display = "inline-block";
       btn.textContent = "♫ Sesi aç";
       banner.style.display = "none";
+      clearTimeout(bannerTimeout);
     }
 
   } catch (e) {
