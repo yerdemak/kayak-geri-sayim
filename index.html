@@ -253,8 +253,10 @@ h1 {
   color: rgba(255,255,255,0.75);
 }
 
+/* Input ve Select elemanları birebir aynı boyut ve padding değerine getirildi */
 .form-group input, .form-group select {
   width: 100%;
+  height: 38px;
   padding: 8px 10px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.2);
@@ -368,7 +370,7 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* Sağ üst ses butonu */
+/* Orijinal Sağ Üst Sesi Aç Butonu */
 .sound {
   position: fixed;
   z-index: 4;
@@ -390,7 +392,6 @@ h1 {
   background: rgba(255,255,255,.15);
 }
 
-/* En üstte ortada çıkacak uyarı banner'ı (Butonla birebir aynı tasarım) */
 #silentBanner {
   position: fixed;
   z-index: 5;
@@ -679,7 +680,8 @@ function calculateSettlement() {
     let creditor = creditors[cIdx];
     let amount = Math.min(-debtor.diff, creditor.diff);
 
-    transactions.push(`• <b>${debtor.name}</b> $\rightarrow$ <b>${creditor.name}</b>: ${amount.toFixed(2)} TL`);
+    // Düzeltme: ightarrow yerine 'ödeyecek' yazdırıldı
+    transactions.push(`• <b>${debtor.name}</b> ödeyecek <b>${creditor.name}</b>: ${amount.toFixed(2)} TL`);
 
     debtor.diff += amount;
     creditor.diff -= amount;
@@ -848,14 +850,12 @@ $("soundButton").addEventListener("click", async () => {
     const banner = $("silentBanner");
 
     if (soundOn) {
-      // Ses açıldığında butonu gizle, üst orta uyarıyı göster
       btn.style.display = "none";
       banner.style.display = "block";
       banner.style.opacity = "1";
 
       clearTimeout(bannerTimeout);
       bannerTimeout = setTimeout(() => {
-        // 3 saniye sonra uyarı yumuşakça kaybolur ve buton geri gelir
         banner.style.opacity = "0";
         setTimeout(() => {
           banner.style.display = "none";
