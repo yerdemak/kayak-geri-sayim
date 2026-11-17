@@ -1,133 +1,208 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kayak Yolculuğu – Erciyes</title>
+<meta name="theme-color" content="#080d18">
+<title>Erzurum Palandöken Kayak Geri Sayım</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, sans-serif;
+:root {
+  --red: #ff303b;
+  --white: #f7f9fc;
 }
 
+* { box-sizing: border-box; }
+
 html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  margin: 0;
+  min-height: 100%;
 }
 
 body {
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--white);
+  font-family: Arial, Helvetica, sans-serif;
   background:
     linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-    url("kayaklogo.jpeg") center / cover no-repeat fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
+    url("arkaplan1.jpeg") center center / cover no-repeat fixed,
+    #101a2b;
 }
 
-canvas {
+#snow {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: 1;
 }
 
-.container {
+.overlay {
+  min-height: 100vh;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 18px 58px;
   text-align: center;
-  animation: sway 6s ease-in-out infinite;
 }
 
-@keyframes sway {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(-6px); }
-  100% { transform: translateX(0); }
+.content {
+  width: min(100%, 720px);
+  animation: float 5s ease-in-out infinite;
 }
 
-.location {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 6px;
+.eyebrow {
+  margin: 0 0 13px;
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: rgba(255,255,255,.76);
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(29px, 6vw, 58px);
+  line-height: 1.08;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-shadow: 0 4px 25px rgba(0,0,0,.5);
 }
 
 .subtitle {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  opacity: 0.9;
+  margin: 13px 0 34px;
+  color: rgba(255,255,255,.83);
+  font-size: clamp(14px, 2.4vw, 18px);
+  letter-spacing: 1.5px;
 }
 
-.highlight {
-  font-size: clamp(1.9rem, 4.8vw, 2.8rem);
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  margin: 0 auto 27px;
+}
+
+.unit {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 11px;
+  min-width: 210px;
+}
+
+.number {
+  color: var(--red);
+  font-size: clamp(43px, 8vw, 68px);
+  line-height: 1;
   font-weight: 900;
-  letter-spacing: 1px;
-  margin-bottom: 18px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 22px rgba(255,48,59,.35);
 }
 
-.timer div {
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  font-weight: 800;
-  margin: 4px 0;
+.unit-label {
+  min-width: 82px;
+  text-align: left;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.83);
 }
 
-#finalScreen {
+.departed {
   display: none;
-  max-width: 90vw;
 }
 
-#finalScreen h1 {
-  font-size: clamp(2.4rem, 6vw, 3.4rem);
+.departed h2 {
+  margin: 0 0 12px;
+  color: var(--red);
+  font-size: clamp(35px, 7vw, 65px);
+  font-weight: 900;
+  text-shadow: 0 0 25px rgba(255,48,59,.25);
 }
 
-#finalScreen p {
-  margin: 8px 0;
-  opacity: 0.9;
+.departed p {
+  margin: 10px 0;
+  font-size: clamp(17px, 3vw, 23px);
 }
 
-.mapBtn {
+.arrival {
+  color: rgba(255,255,255,.78);
+  font-size: 15px !important;
+  line-height: 1.7;
+}
+
+.map-link {
   display: inline-block;
-  margin-top: 14px;
-  padding: 12px 22px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 22px;
-  color: #fff;
+  margin-top: 24px;
+  padding: 14px 23px;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 7px;
+  color: white;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(8px);
+  transition: .2s;
 }
 
-.mapBtn:hover {
-  background: rgba(255,255,255,0.25);
+.map-link:hover {
+  background: rgba(255,255,255,.23);
+  transform: translateY(-2px);
 }
 
-.info {
-  font-size: 0.85rem;
-  margin-top: 12px;
-  opacity: 0.75;
-}
-
-.footer {
+.sound {
   position: fixed;
-  bottom: 12px;
-  width: 100%;
+  z-index: 4;
+  top: 18px;
+  right: 18px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 30px;
+  padding: 9px 13px;
+  color: white;
+  background: rgba(0,0,0,.25);
+  cursor: pointer;
+  font-size: 12px;
+  backdrop-filter: blur(6px);
+}
+
+footer {
+  position: fixed;
+  z-index: 3;
+  bottom: 13px;
+  left: 10px;
+  right: 10px;
   text-align: center;
-  font-size: 0.75rem;
-  opacity: 0.6;
-  z-index: 2;
+  color: rgba(255,255,255,.58);
+  font-size: 10px;
+  letter-spacing: 1.2px;
 }
 
-.timer div {
-  color: #ff3b3b;
-  text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
-.highlight {
-  color: #F9F8F6;
-}
+@media (max-height: 650px) {
+  .overlay {
+    padding-top: 20px;
+    padding-bottom: 42px;
+  }
 
+  .subtitle { margin-bottom: 18px; }
+  .countdown { gap: 7px; }
+
+  .number {
+    font-size: clamp(36px, 7vh, 54px);
+  }
+}
 </style>
 </head>
 
@@ -135,125 +210,240 @@ canvas {
 
 <canvas id="snow"></canvas>
 
-<div class="container" id="countdownContainer">
-  <div class="location">Kayseri Erciyes Kayak Merkezi</div>
-  <div class="subtitle">Yola çıkmaya kalan süre</div>
-  <div class="subtitle highlight">AZ KALDI AMK</div>
+<button class="sound" id="soundButton" type="button">
+  ♫ Sesi aç
+</button>
 
-  <div class="timer">
-    <div id="days">-- Gün</div>
-    <div id="hours">-- Saat</div>
-    <div id="minutes">-- Dakika</div>
-    <div id="seconds">-- Saniye</div>
-  </div>
+<main class="overlay">
 
-  <div class="info">6 Şubat 2026 – Saat 21:30 Baz Alınmıştır</div>
-</div>
+  <section class="content" id="countdownScreen">
 
-<div class="container" id="finalScreen">
-  <h1>YOLA ÇIKILDI</h1>
-  <p>İyi yolculuklar 🚗❄️</p>
-  <p><strong>Tahmini Varış:</strong> 7 Şubat 06:00 – 08:00</p>
+    <p class="eyebrow">Kışın çağrısına hazır ol</p>
 
-  <a class="mapBtn"
-     href="yandexmaps://maps.yandex.com/?rtext=Kağıthane İETT Garajı~Erciyes Hacılar&rtt=auto"
-     onclick="fallbackMap(event)">
-     📍 Yandex Maps’te Rotayı Aç
-  </a>
-</div>
+    <h1>
+      ERZURUM PALANDÖKEN<br>
+      KAYAK MERKEZİ
+    </h1>
 
-<div class="footer">
+    <p class="subtitle">YOLA ÇIKMAYA KALAN SÜRE</p>
+
+    <div class="countdown" aria-live="off">
+
+      <div class="unit">
+        <span class="number" id="days">000</span>
+        <span class="unit-label">GÜN</span>
+      </div>
+
+      <div class="unit">
+        <span class="number" id="hours">00</span>
+        <span class="unit-label">SAAT</span>
+      </div>
+
+      <div class="unit">
+        <span class="number" id="minutes">00</span>
+        <span class="unit-label">DAKİKA</span>
+      </div>
+
+      <div class="unit">
+        <span class="number" id="seconds">00</span>
+        <span class="unit-label">SANİYE</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="content departed" id="departedScreen">
+
+    <h2>YOLA ÇIKILDI</h2>
+
+    <p>İyi yolculuklar! 🚗❄️</p>
+
+    <p class="arrival">
+      Tahmini varış zamanı<br>
+      <strong>20 Mart 2027 · 10:00</strong>
+    </p>
+
+    <a
+      class="map-link"
+      href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B0stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      YANDEX HARİTALARDA ROTAYI AÇ
+    </a>
+
+  </section>
+
+</main>
+
+<footer>
   KASTAMONU SKI COMMUNITY – TÜM HAKLARI SAKLIDIR
-</div>
-
-<audio id="windSound" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2f27b0e1df.mp3" type="audio/mpeg">
-</audio>
+</footer>
 
 <script>
-/* === YOLA ÇIKIŞ: 6 ŞUBAT 2026 - 21:00 === */
-const startTime = new Date("2026-02-06T21:30:00");
 
-const daysEl = document.getElementById("days");
-const hoursEl = document.getElementById("hours");
-const minutesEl = document.getElementById("minutes");
-const secondsEl = document.getElementById("seconds");
+// Çıkış tarihi: 19 Mart 2027, saat 22:00
+const departureTime =
+  new Date("2027-03-19T22:00:00+03:00").getTime();
 
-const countdownContainer = document.getElementById("countdownContainer");
-const finalScreen = document.getElementById("finalScreen");
-
-const wind = document.getElementById("windSound");
-wind.volume = 0.25;
+const $ = id => document.getElementById(id);
 
 function updateCountdown() {
-  const now = new Date();
-  let diff = startTime - now;
 
-  if (diff <= 0) {
-    countdownContainer.style.display = "none";
-    finalScreen.style.display = "block";
-    wind.volume = 0.45;
-    wind.play();
+  const remaining = departureTime - Date.now();
+
+  if (remaining <= 0) {
+    $("countdownScreen").style.display = "none";
+    $("departedScreen").style.display = "block";
     return;
   }
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
-  const minutes = Math.floor(diff / (1000 * 60)) % 60;
-  const seconds = Math.floor(diff / 1000) % 60;
+  const totalSeconds = Math.floor(remaining / 1000);
 
-  daysEl.textContent = days + " Gün";
-  hoursEl.textContent = hours + " Saat";
-  minutesEl.textContent = minutes + " Dakika";
-  secondsEl.textContent = seconds + " Saniye";
+  $("days").textContent =
+    String(Math.floor(totalSeconds / 86400)).padStart(3, "0");
+
+  $("hours").textContent =
+    String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+
+  $("minutes").textContent =
+    String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+
+  $("seconds").textContent =
+    String(totalSeconds % 60).padStart(2, "0");
 }
 
-setInterval(updateCountdown, 1000);
 updateCountdown();
+setInterval(updateCountdown, 1000);
 
-/* === KAR === */
-const canvas = document.getElementById("snow");
+
+// Dikey kar yağışı
+
+const canvas = $("snow");
 const ctx = canvas.getContext("2d");
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+let flakes = [];
 
-const flakes = Array.from({ length: 220 }, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random() * 3 + 1,
-  d: Math.random() * 1.4 + 0.6
-}));
+function resizeSnow() {
+
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
+
+  ctx.setTransform(
+    devicePixelRatio, 0, 0,
+    devicePixelRatio, 0, 0
+  );
+
+  flakes = Array.from(
+    { length: Math.min(150, Math.floor(window.innerWidth / 7)) },
+    () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 2.2 + .5,
+      speed: Math.random() * 1.4 + .6,
+      opacity: Math.random() * .65 + .2
+    })
+  );
+}
 
 function snow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(255,255,255,0.85)";
-  ctx.beginPath();
 
-  flakes.forEach(f => {
-    ctx.moveTo(f.x, f.y);
+  ctx.clearRect(
+    0, 0,
+    window.innerWidth,
+    window.innerHeight
+  );
+
+  for (const f of flakes) {
+
+    ctx.beginPath();
     ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-    f.y += f.d;
-    if (f.y > canvas.height) {
-      f.y = -10;
-      f.x = Math.random() * canvas.width;
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+    ctx.fill();
+
+    f.y += f.speed;
+
+    if (f.y > window.innerHeight + 5) {
+      f.y = -5;
+      f.x = Math.random() * window.innerWidth;
     }
-  });
+  }
 
-  ctx.fill();
+  requestAnimationFrame(snow);
 }
-setInterval(snow, 45);
 
-function fallbackMap(e) {
-  setTimeout(() => {
-    window.location.href =
-      "https://yandex.com/maps/?rtext=Kağıthane İETT Garajı~Erciyes Hacılar&rtt=auto";
-  }, 500);
-}
+window.addEventListener("resize", resizeSnow);
+resizeSnow();
+snow();
+
+
+// Rüzgâr sesi
+
+let audioContext, windSource, windGain, soundOn = false;
+
+$("soundButton").addEventListener("click", async () => {
+
+  try {
+
+    if (!audioContext) {
+
+      audioContext = new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+      const bufferSize = audioContext.sampleRate * 3;
+
+      const buffer = audioContext.createBuffer(
+        1, bufferSize, audioContext.sampleRate
+      );
+
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * .22;
+      }
+
+      windSource = audioContext.createBufferSource();
+      windSource.buffer = buffer;
+      windSource.loop = true;
+
+      const filter = audioContext.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 420;
+
+      windGain = audioContext.createGain();
+      windGain.gain.value = 0;
+
+      windSource.connect(filter);
+      filter.connect(windGain);
+      windGain.connect(audioContext.destination);
+
+      windSource.start();
+    }
+
+    await audioContext.resume();
+
+    soundOn = !soundOn;
+
+    windGain.gain.setTargetAtTime(
+      soundOn ? .10 : 0,
+      audioContext.currentTime,
+      .3
+    );
+
+    $("soundButton").textContent =
+      soundOn ? "♫ Sesi kapat" : "♫ Sesi aç";
+
+  } catch (e) {
+
+    $("soundButton").textContent = "Ses kullanılamıyor";
+
+  }
+
+});
+
 </script>
 
 </body>
