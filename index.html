@@ -161,7 +161,7 @@ h1 {
   margin-top: 2px;
 }
 
-/* Masraf Butonu */
+/* Hava Durumunun Altındaki Ortalanmış Masraf Butonu */
 .center-expense-btn {
   display: inline-block;
   margin-top: 10px;
@@ -469,3 +469,447 @@ footer {
         <span class="unit-label">GÜN</span>
       </div>
       <div class="unit">
+        <span class="number" id="hours">00</span>
+        <span class="unit-label">SAAT</span>
+      </div>
+      <div class="unit">
+        <span class="number" id="minutes">00</span>
+        <span class="unit-label">DAKİKA</span>
+      </div>
+      <div class="unit">
+        <span class="number" id="seconds">00</span>
+        <span class="unit-label">SANİYE</span>
+      </div>
+    </div>
+
+    <!-- 6 Günlük Hava Durumu Widget Alanı -->
+    <div class="weather-card">
+      <h3>Palandöken 6 Günlük Hava Durumu</h3>
+      <div id="forecast-container" class="forecast-grid">
+        <p style="font-size: 0.75rem; opacity: 0.7; margin: 4px 0; grid-column: span 6;">Yükleniyor...</p>
+      </div>
+    </div>
+
+    <!-- Masraf Butonu -->
+    <div>
+      <button class="center-expense-btn" id="openExpenseModal" type="button">💰 Masraf Hesapla</button>
+    </div>
+
+  </section>
+
+  <section class="content departed" id="departedScreen">
+    <h2>YOLA ÇIKILDI</h2>
+    <p>İyi yolculuklar! 🚗❄️</p>
+    <p class="arrival">
+      Tahmini varış zamanı<br>
+      <strong>20 Mart 2027 · 10:00</strong>
+    </p>
+
+    <a
+      class="map-link"
+      href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B1stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      YANDEX HARİTALARDA ROTAYI AÇ
+    </a>
+  </section>
+
+</main>
+
+<!-- Masraf Modalı -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Kastamonu Ski Community - Ortak Bütçe</h3>
+      <button class="close-btn" id="closeExpenseModal">&times;</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="flex: 0.8;">
+        <label>Kim Ödedi?</label>
+        <select id="expPayer">
+          <option value="Era">Era</option>
+          <option value="Burak">Burak</option>
+          <option value="Burhan">Burhan</option>
+          <option value="Erdem">Erdem</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex: 1.4;">
+        <label>Açıklama</label>
+        <input type="text" id="expDesc" placeholder="Benzin, Otel...">
+      </div>
+      <div class="form-group" style="flex: 0.8;">
+        <label>Tutar (TL)</label>
+        <input type="number" id="expAmount" placeholder="0.00">
+      </div>
+    </div>
+
+    <button class="add-expense-btn" id="addExpenseBtn">Harcama Ekle</button>
+
+    <div class="expense-list" id="expenseListContainer">
+      <p style="font-size:11px; opacity:0.6; text-align:center; margin:4px 0;">Yükleniyor...</p>
+    </div>
+
+    <div class="settlement-summary" id="settlementContainer">
+      <h4>Borç / Alacak Özeti</h4>
+      <div id="settlementText">Henüz harcama girilmedi.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  KASTAMONU SKI COMMUNITY – TÜM HAKLARI SAKLIDIR
+</footer>
+
+<script>
+// Çıkış tarihi: 19 Mart 2027, saat 22:00
+const departureTime = new Date("2027-03-19T22:00:00+03:00").getTime();
+const $ = id => document.getElementById(id);
+
+function updateCountdown() {
+  const remaining = departureTime - Date.now();
+  if (remaining <= 0) {
+    $("countdownScreen").style.display = "none";
+    $("departedScreen").style.display = "block";
+    return;
+  }
+  const totalSeconds = Math.floor(remaining / 1000);
+  $("days").textContent = String(Math.floor(totalSeconds / 86400)).padStart(3, "0");
+  $("hours").textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+  $("minutes").textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  $("seconds").textContent = String(totalSeconds % 60).padStart(2, "0");
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// Masraf Modalı Kontrolleri
+$("openExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "flex";
+  fetchExpenses();
+});
+$("closeExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "none";
+});
+window.addEventListener("click", (e) => {
+  if (e.target === $("expenseModal")) $("expenseModal").style.display = "none";
+});
+
+/* ORTAK BULUT SENKRONİZASYON MOTORU (Şifresiz & Anlık Senkronize) */
+const API_URL = "https://jsonbin.org/yerdemak_ski_expenses_2027/expenses"; 
+// Her iki cihazın da (PC ve Telefon) ortak okuyup yazacağı güvenli ortak uç nokta
+let expenses = [];
+
+async function fetchExpenses() {
+  try {
+    const res = await fetch(API_URL);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        expenses = data;
+        renderExpenses();
+        return;
+      }
+    }
+  } catch (err) {
+    // Bulut erişilemezse lokal hafızayı yedek al
+  }
+  expenses = JSON.parse(localStorage.getItem("ski_expenses")) || [];
+  renderExpenses();
+}
+
+async function saveExpensesToCloud() {
+  renderExpenses();
+  localStorage.setItem("ski_expenses", JSON.stringify(expenses));
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(expenses)
+    });
+  } catch (err) {
+    console.error("Buluta yazılamadı.");
+  }
+}
+
+function renderExpenses() {
+  const container = $("expenseListContainer");
+  container.innerHTML = "";
+  
+  if (expenses.length === 0) {
+    container.innerHTML = '<p style="font-size:11px; opacity:0.6; text-align:center; margin:4px 0;">Henüz harcama eklenmemiş.</p>';
+    calculateSettlement();
+    return;
+  }
+
+  expenses.forEach((exp, index) => {
+    container.innerHTML += `
+      <div class="expense-item">
+        <span><b>${exp.payer}</b>: ${exp.desc} - <b>${exp.amount} TL</b></span>
+        <button class="delete-exp" onclick="removeExpense(${index})">Sil</button>
+      </div>
+    `;
+  });
+  calculateSettlement();
+}
+
+function addExpense() {
+  const payer = $("expPayer").value;
+  const desc = $("expDesc").value.trim();
+  const amount = parseFloat($("expAmount").value);
+
+  if (!desc || isNaN(amount) || amount <= 0) {
+    alert("Lütfen geçerli bir açıklama ve tutar girin.");
+    return;
+  }
+
+  expenses.push({ payer, desc, amount });
+  saveExpensesToCloud();
+  
+  $("expDesc").value = "";
+  $("expAmount").value = "";
+}
+
+window.removeExpense = function(index) {
+  expenses.splice(index, 1);
+  saveExpensesToCloud();
+}
+
+$("addExpenseBtn").addEventListener("click", addExpense);
+
+function calculateSettlement() {
+  const members = ["Era", "Burak", "Burhan", "Erdem"];
+  let paid = { "Era": 0, "Burak": 0, "Burhan": 0, "Erdem": 0 };
+  let totalSpent = 0;
+
+  expenses.forEach(e => {
+    if (paid[e.payer] !== undefined) {
+      paid[e.payer] += e.amount;
+      totalSpent += e.amount;
+    }
+  });
+
+  if (expenses.length === 0) {
+    $("settlementText").innerHTML = "Henüz harcama girilmedi.";
+    return;
+  }
+
+  const perPerson = totalSpent / 4;
+  let balances = [];
+
+  members.forEach(m => {
+    balances.push({ name: m, diff: paid[m] - perPerson });
+  });
+
+  let debtors = balances.filter(b => b.diff < -0.01).sort((a,b) => a.diff - b.diff);
+  let creditors = balances.filter(b => b.diff > 0.01).sort((a,b) => a.diff - b.diff);
+
+  let resultHtml = `<b>Toplam:</b> ${totalSpent.toFixed(2)} TL (Kişi başı: ${perPerson.toFixed(2)} TL)<br>`;
+  
+  let transactions = [];
+  let dIdx = 0, cIdx = 0;
+
+  while (dIdx < debtors.length && cIdx < creditors.length) {
+    let debtor = debtors[dIdx];
+    let creditor = creditors[cIdx];
+    let amount = Math.min(-debtor.diff, creditor.diff);
+
+    transactions.push(`• <b>${debtor.name}</b> ödeyecek <b>${creditor.name}</b>: ${amount.toFixed(2)} TL`);
+
+    debtor.diff += amount;
+    creditor.diff -= amount;
+
+    if (Math.abs(debtor.diff) < 0.01) dIdx++;
+    if (Math.abs(creditor.diff) < 0.01) cIdx++;
+  }
+
+  if (transactions.length === 0) {
+    resultHtml += "Herkes eşit harcamış! 🎉";
+  } else {
+    resultHtml += transactions.join("<br>");
+  }
+
+  $("settlementText").innerHTML = resultHtml;
+}
+
+// Sayfa ilk açıldığında verileri buluttan çek ve her 3 saniyede bir otomatik senkronize et
+fetchExpenses();
+setInterval(fetchExpenses, 3000);
+
+
+// Canlı 6 Günlük Hava Durumu Çekme (Open-Meteo API)
+async function fetchWeather() {
+  const lat = 39.8936;
+  const lon = 41.2758;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe/Istanbul`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    const container = document.getElementById('forecast-container');
+    container.innerHTML = '';
+
+    for (let i = 0; i < 6; i++) {
+      const dateStr = data.daily.time[i];
+      const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
+      const minTemp = Math.round(data.daily.temperature_2m_min[i]);
+      const weatherCode = data.daily.weathercode[i];
+
+      const dateObj = new Date(dateStr);
+      const dayName = dateObj.toLocaleDateString('tr-TR', { weekday: 'short', month: 'numeric', day: 'numeric' });
+
+      let weatherIcon = '☀️';
+      if (weatherCode >= 1 && weatherCode <= 3) weatherIcon = '⛅';
+      else if (weatherCode >= 51 && weatherCode <= 67) weatherIcon = '🌧️';
+      else if (weatherCode >= 71 && weatherCode <= 77) weatherIcon = '🌨️';
+      else if (weatherCode >= 95) weatherIcon = '⚡';
+
+      const dayHtml = `
+        <div class="forecast-day">
+          <span class="date">${dayName}</span>
+          <div style="font-size: 1rem; margin: 2px 0;">${weatherIcon}</div>
+          <div class="temp"><b>${maxTemp}°</b>/<span style="opacity:0.7">${minTemp}°</span></div>
+        </div>
+      `;
+      container.innerHTML += dayHtml;
+    }
+  } catch (error) {
+    document.getElementById('forecast-container').innerHTML = '<p style="font-size: 0.75rem; grid-column: span 6;">Hava durumu alınamadı.</p>';
+  }
+}
+fetchWeather();
+
+
+// Kar Yağışı Efekti
+const canvas = $("snow");
+const ctx = canvas.getContext("2d");
+let flakes = [];
+
+function resizeSnow() {
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  flakes = Array.from(
+    { length: Math.min(150, Math.floor(window.innerWidth / 7)) },
+    () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 2.2 + .5,
+      speed: Math.random() * 1.4 + .6,
+      opacity: Math.random() * .65 + .2
+    })
+  );
+}
+
+function snow() {
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  for (const f of flakes) {
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+    ctx.fill();
+    f.y += f.speed;
+    if (f.y > window.innerHeight + 5) {
+      f.y = -5;
+      f.x = Math.random() * window.innerWidth;
+    }
+  }
+  requestAnimationFrame(snow);
+}
+
+window.addEventListener("resize", resizeSnow);
+resizeSnow();
+snow();
+
+
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, Buton Gizleme ve 3 Saniyelik Uyarı Mantığı
+let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
+let bannerTimeout;
+
+$("soundButton").addEventListener("click", async () => {
+  try {
+    if (!audioContext) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioContext = new AudioContextClass();
+
+      const bufferSize = audioContext.sampleRate * 5;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.8;
+      }
+
+      windSource = audioContext.createBufferSource();
+      windSource.buffer = buffer;
+      windSource.loop = true;
+
+      const filter = audioContext.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 320; 
+      filter.Q.value = 4.5;
+
+      lfo = audioContext.createOscillator();
+      lfo.frequency.value = 0.22;
+      lfoGain = audioContext.createGain();
+      lfoGain.gain.value = 180;
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      lfo.start();
+
+      windGain = audioContext.createGain();
+      windGain.gain.value = 0;
+
+      windSource.connect(filter);
+      filter.connect(windGain);
+      windGain.connect(audioContext.destination);
+
+      windSource.start();
+    }
+
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
+    soundOn = !soundOn;
+
+    windGain.gain.setTargetAtTime(
+      soundOn ? 0.65 : 0, 
+      audioContext.currentTime,
+      0.3
+    );
+
+    const btn = $("soundButton");
+    const banner = $("silentBanner");
+
+    if (soundOn) {
+      btn.style.display = "none";
+      banner.style.display = "block";
+      banner.style.opacity = "1";
+
+      clearTimeout(bannerTimeout);
+      bannerTimeout = setTimeout(() => {
+        banner.style.opacity = "0";
+        setTimeout(() => {
+          banner.style.display = "none";
+          btn.textContent = "♫ Sesi kapat";
+          btn.style.display = "inline-block";
+        }, 500);
+      }, 3000);
+
+    } else {
+      btn.textContent = "♫ Sesi aç";
+      banner.style.display = "none";
+      clearTimeout(bannerTimeout);
+    }
+
+  } catch (e) {
+    $("soundButton").textContent = "Ses açılamadı";
+  }
+});
+</script>
+
+</body>
+</html>
