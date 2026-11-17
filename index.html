@@ -160,31 +160,86 @@ h1 {
   margin-top: 2px;
 }
 
-/* Şimdiden Görünen Masraf ve Borç Paneli Stilleri */
-.expense-card {
-  background: rgba(16, 26, 43, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  padding: 12px 15px;
-  margin: 12px auto 0;
-  color: #fff;
-  text-align: left;
+/* Hava Durumunun Altındaki Ortalanmış Masraf Butonu */
+.center-expense-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 30px;
+  color: white;
+  background: rgba(0,0,0,.3);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  backdrop-filter: blur(6px);
+  transition: 0.2s;
 }
 
-.expense-card h3 {
-  margin: 0 0 10px;
+.center-expense-btn:hover {
+  background: rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+
+/* Şeffaf Masraf Paneli (Modal) Stilleri */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.modal-content {
+  background: rgba(16, 26, 43, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+  color: white;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.modal-header h3 {
+  margin: 0;
   font-size: 11px;
   letter-spacing: 2px;
-  color: rgba(255,255,255,.9);
+  color: rgba(255,255,255,0.9);
   text-transform: uppercase;
-  text-align: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .form-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .form-group {
@@ -200,7 +255,7 @@ h1 {
 
 .form-group input, .form-group select {
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 6px;
@@ -215,20 +270,20 @@ h1 {
 
 .add-expense-btn {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   background: var(--red);
   color: white;
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
 .expense-list {
-  margin-top: 10px;
-  max-height: 90px;
+  margin-top: 12px;
+  max-height: 120px;
   overflow-y: auto;
   border-top: 1px solid rgba(255,255,255,0.1);
   padding-top: 8px;
@@ -239,9 +294,9 @@ h1 {
   justify-content: space-between;
   align-items: center;
   background: rgba(255,255,255,0.05);
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-bottom: 4px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
   font-size: 11px;
 }
 
@@ -255,16 +310,16 @@ h1 {
 }
 
 .settlement-summary {
-  margin-top: 10px;
+  margin-top: 12px;
   background: rgba(0, 255, 128, 0.08);
   border: 1px solid rgba(0, 255, 128, 0.3);
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-radius: 6px;
   font-size: 11px;
 }
 
 .settlement-summary h4 {
-  margin: 0 0 4px;
+  margin: 0 0 5px;
   color: #00ff80;
   font-size: 11px;
 }
@@ -313,7 +368,7 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* Şeffaf Sağ Üst Ses Butonu (Orijinal Tasarım) */
+/* Orijinal Sağ Üst Sesi Aç Butonu */
 .sound {
   position: fixed;
   z-index: 4;
@@ -364,6 +419,7 @@ footer {
 
 <canvas id="snow"></canvas>
 
+<!-- Sağ üstte orijinal ses butonu -->
 <button class="sound" id="soundButton" type="button">
   ♫ Sesi aç
 </button>
@@ -408,40 +464,9 @@ footer {
       </div>
     </div>
 
-    <!-- Şimdiden Görünen Masraf & Borç Hesaplama Paneli -->
-    <div class="expense-card">
-      <h3>Kastamonu Ski Community - Ortak Bütçe</h3>
-      
-      <div class="form-row">
-        <div class="form-group" style="flex: 0.8;">
-          <label>Kim Ödedi?</label>
-          <select id="expPayer">
-            <option value="Era">Era</option>
-            <option value="Burak">Burak</option>
-            <option value="Burhan">Burhan</option>
-            <option value="Erdem">Erdem</option>
-          </select>
-        </div>
-        <div class="form-group" style="flex: 1.4;">
-          <label>Açıklama</label>
-          <input type="text" id="expDesc" placeholder="Benzin, Otel...">
-        </div>
-        <div class="form-group" style="flex: 0.8;">
-          <label>Tutar (TL)</label>
-          <input type="number" id="expAmount" placeholder="0.00">
-        </div>
-      </div>
-
-      <button class="add-expense-btn" id="addExpenseBtn">Harcama Ekle</button>
-
-      <div class="expense-list" id="expenseListContainer">
-        <!-- Harcamalar buraya listelenir -->
-      </div>
-
-      <div class="settlement-summary" id="settlementContainer">
-        <h4>Borç / Alacak Özeti</h4>
-        <div id="settlementText">Henüz harcama girilmedi.</div>
-      </div>
+    <!-- Hava Durumunun Altında Tam Ortada Yer Alan Masraf Butonu -->
+    <div>
+      <button class="center-expense-btn" id="openExpenseModal" type="button">💰 Masraf Hesapla</button>
     </div>
 
   </section>
@@ -465,6 +490,47 @@ footer {
   </section>
 
 </main>
+
+<!-- Masraf Modalı (Şeffaf Açılır Pencere) -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Kastamonu Ski Community - Ortak Bütçe</h3>
+      <button class="close-btn" id="closeExpenseModal">&times;</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="flex: 0.8;">
+        <label>Kim Ödedi?</label>
+        <select id="expPayer">
+          <option value="Era">Era</option>
+          <option value="Burak">Burak</option>
+          <option value="Burhan">Burhan</option>
+          <option value="Erdem">Erdem</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex: 1.4;">
+        <label>Açıklama</label>
+        <input type="text" id="expDesc" placeholder="Benzin, Otel...">
+      </div>
+      <div class="form-group" style="flex: 0.8;">
+        <label>Tutar (TL)</label>
+        <input type="number" id="expAmount" placeholder="0.00">
+      </div>
+    </div>
+
+    <button class="add-expense-btn" id="addExpenseBtn">Harcama Ekle</button>
+
+    <div class="expense-list" id="expenseListContainer">
+      <!-- Harcamalar buraya listelenir -->
+    </div>
+
+    <div class="settlement-summary" id="settlementContainer">
+      <h4>Borç / Alacak Özeti</h4>
+      <div id="settlementText">Henüz harcama girilmedi.</div>
+    </div>
+  </div>
+</div>
 
 <footer>
   KASTAMONU SKI COMMUNITY – TÜM HAKLARI SAKLIDIR
@@ -490,6 +556,17 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// Masraf Modalı Kontrolleri
+$("openExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "flex";
+});
+$("closeExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "none";
+});
+window.addEventListener("click", (e) => {
+  if (e.target === $("expenseModal")) $("expenseModal").style.display = "none";
+});
 
 // Masraf ve Borç Hesaplama Mantığı (LocalStorage destekli - Era, Burak, Burhan, Erdem)
 let expenses = JSON.parse(localStorage.getItem("ski_expenses")) || [];
@@ -746,7 +823,6 @@ $("soundButton").addEventListener("click", async () => {
     const btn = $("soundButton");
 
     if (soundOn) {
-      // Ses açıldığında buton metni kısa süreliğine sessiz mod uyarısı olur, sonra normale döner
       btn.textContent = "🔕 Sessiz moddaysa çıkarın";
       
       clearTimeout(buttonTimeout);
