@@ -368,7 +368,7 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* Orijinal Sağ Üst Sesi Aç Butonu ve Üst Orta Uyarı Kutusu */
+/* Sağ üst ses butonu */
 .sound {
   position: fixed;
   z-index: 4;
@@ -390,6 +390,7 @@ h1 {
   background: rgba(255,255,255,.15);
 }
 
+/* En üstte ortada çıkacak uyarı banner'ı (Butonla birebir aynı tasarım) */
 #silentBanner {
   position: fixed;
   z-index: 5;
@@ -785,7 +786,7 @@ resizeSnow();
 snow();
 
 
-// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, 3 Saniye Sonra Otomatik Kaybolan Üst Orta Uyarı Banner'ı
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, Buton Gizleme ve 3 Saniyelik Uyarı Mantığı
 let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
 let bannerTimeout;
 
@@ -847,17 +848,21 @@ $("soundButton").addEventListener("click", async () => {
     const banner = $("silentBanner");
 
     if (soundOn) {
-      btn.textContent = "♫ Sesi kapat";
-      
-      // Üst ortada banner'ı göster
+      // Ses açıldığında butonu gizle, üst orta uyarıyı göster
+      btn.style.display = "none";
       banner.style.display = "block";
       banner.style.opacity = "1";
 
       clearTimeout(bannerTimeout);
       bannerTimeout = setTimeout(() => {
+        // 3 saniye sonra uyarı yumuşakça kaybolur ve buton geri gelir
         banner.style.opacity = "0";
-        setTimeout(() => { banner.style.display = "none"; }, 500); // Yumuşak kapanış için
-      }, 3000); // 3 saniye sonra kaybolur
+        setTimeout(() => {
+          banner.style.display = "none";
+          btn.textContent = "♫ Sesi kapat";
+          btn.style.display = "inline-block";
+        }, 500);
+      }, 3000);
 
     } else {
       btn.textContent = "♫ Sesi aç";
