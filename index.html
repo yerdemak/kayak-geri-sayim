@@ -383,7 +383,6 @@ async function fetchWeather() {
     const container = document.getElementById('forecast-container');
     container.innerHTML = '';
 
-    // 6 gün döngüsü (i < 6)
     for (let i = 0; i < 6; i++) {
       const dateStr = data.daily.time[i];
       const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
@@ -477,9 +476,8 @@ resizeSnow();
 snow();
 
 
-// Rüzgâr sesi
-
-let audioContext, windSource, windGain, soundOn = false;
+// Rüzgâr sesi (Tok dağ uğultusu ve doğal dalgalanma efekti)
+let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
 
 $("soundButton").addEventListener("click", async () => {
 
@@ -492,7 +490,7 @@ $("soundButton").addEventListener("click", async () => {
         window.webkitAudioContext
       )();
 
-      const bufferSize = audioContext.sampleRate * 3;
+      const bufferSize = audioContext.sampleRate * 5;
 
       const buffer = audioContext.createBuffer(
         1, bufferSize, audioContext.sampleRate
@@ -501,7 +499,7 @@ $("soundButton").addEventListener("click", async () => {
       const data = buffer.getChannelData(0);
 
       for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * .22;
+        data[i] = (Math.random() * 2 - 1) * 0.5;
       }
 
       windSource = audioContext.createBufferSource();
@@ -510,7 +508,18 @@ $("soundButton").addEventListener("click", async () => {
 
       const filter = audioContext.createBiquadFilter();
       filter.type = "lowpass";
-      filter.frequency.value = 420;
+      filter.frequency.value = 180; // Derin ve tok dağ uğultusu
+      filter.Q.value = 3;
+
+      // Rüzgâr dalgalanma efekti (LFO)
+      lfo = audioContext.createOscillator();
+      lfo.frequency.value = 0.15;
+      lfoGain = audioContext.createGain();
+      lfoGain.gain.value = 80;
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      lfo.start();
 
       windGain = audioContext.createGain();
       windGain.gain.value = 0;
@@ -527,9 +536,9 @@ $("soundButton").addEventListener("click", async () => {
     soundOn = !soundOn;
 
     windGain.gain.setTargetAtTime(
-      soundOn ? .10 : 0,
+      soundOn ? 0.25 : 0,
       audioContext.currentTime,
-      .3
+      0.5
     );
 
     $("soundButton").textContent =
@@ -538,6 +547,7 @@ $("soundButton").addEventListener("click", async () => {
   } catch (e) {
 
     $("soundButton").textContent = "Ses kullanılamıyor";
+    console.error("Ses hatası:", e);
 
   }
 
