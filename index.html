@@ -80,42 +80,38 @@ h1 {
   letter-spacing: 1.5px;
 }
 
-/* Sayaç Stilleri (Yanyana bloklar halinde, etiketler tam altta) */
+/* Sayaç Stilleri (Eski yatay yapı, etiketler tam altta ve ortada) */
 .countdown {
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin: 0 auto 15px;
-  flex-wrap: wrap;
 }
 
 .unit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 12px 16px;
-  border-radius: 12px;
-  min-width: 85px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  justify-content: center;
+  min-width: 210px;
 }
 
 .number {
   color: var(--jersey-blue); /* Forma rengi sayılar */
-  font-size: clamp(32px, 5.5vw, 50px);
+  font-size: clamp(38px, 7vw, 62px);
   line-height: 1;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 0 22px rgba(19,41,75,.35);
 }
 
 .unit-label {
-  margin-top: 6px;
+  margin-top: 4px;
   text-align: center;
   font-size: 11px;
   letter-spacing: 2px;
-  color: #101a2b;
-  font-weight: 700;
+  color: rgba(255,255,255,.83);
 }
 
 /* 6 Günlük Hava Durumu Stilleri */
@@ -466,7 +462,7 @@ footer {
 
     <p class="subtitle">YOLA ÇIKMAYA KALAN SÜRE</p>
 
-    <!-- Yeni Düzenlenen Sayaç (Etiketler alt alta) -->
+    <!-- Eski Yapı Sayaç (Etiketler sayıların hemen altında ve ortada) -->
     <div class="countdown" aria-live="off">
       <div class="unit">
         <span class="number" id="days">000</span>
