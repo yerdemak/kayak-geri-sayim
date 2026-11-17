@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -22,12 +21,11 @@ html, body {
 
 body {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   color: var(--white);
   font-family: Arial, Helvetica, sans-serif;
   background:
     linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-    url("arkaplan1.jpeg") center center / cover no-repeat fixed,
     #101a2b;
 }
 
@@ -75,7 +73,7 @@ h1 {
 }
 
 .subtitle {
-  margin: 13px 0 34px;
+  margin: 13px 0 24px;
   color: rgba(255,255,255,.83);
   font-size: clamp(14px, 2.4vw, 18px);
   letter-spacing: 1.5px;
@@ -86,7 +84,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   gap: 13px;
-  margin: 0 auto 27px;
+  margin: 0 auto 20px;
 }
 
 .unit {
@@ -112,6 +110,53 @@ h1 {
   font-size: 13px;
   letter-spacing: 2px;
   color: rgba(255,255,255,.83);
+}
+
+/* Hava Durumu Widget Stilleri */
+.weather-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px auto;
+  color: #fff;
+  text-align: center;
+}
+
+.weather-card h3 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.85);
+  text-transform: uppercase;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+  gap: 8px;
+}
+
+.forecast-day {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.forecast-day .date {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.forecast-day .temp {
+  font-size: 0.95rem;
+  margin-top: 4px;
 }
 
 .departed {
@@ -190,18 +235,10 @@ footer {
   50% { transform: translateY(-5px); }
 }
 
-@media (max-height: 650px) {
-  .overlay {
-    padding-top: 20px;
-    padding-bottom: 42px;
-  }
-
-  .subtitle { margin-bottom: 18px; }
-  .countdown { gap: 7px; }
-
-  .number {
-    font-size: clamp(36px, 7vh, 54px);
-  }
+@media (max-height: 750px) {
+  body { overflow-y: auto; }
+  .overlay { padding-top: 20px; padding-bottom: 42px; }
+  .content { animation: none; }
 }
 </style>
 </head>
@@ -251,6 +288,14 @@ footer {
 
     </div>
 
+    <!-- 7 Günlük Palandöken Hava Durumu Widget Alanı -->
+    <div class="weather-card">
+      <h3>Palandöken 7 Günlük Hava Durumu</h3>
+      <div id="forecast-container" class="forecast-grid">
+        <p style="font-size: 0.85rem; opacity: 0.7; margin: 5px 0;">Yükleniyor...</p>
+      </div>
+    </div>
+
   </section>
 
   <section class="content departed" id="departedScreen">
@@ -266,7 +311,7 @@ footer {
 
     <a
       class="map-link"
-      href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B0stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
+      href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B1stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -316,6 +361,52 @@ function updateCountdown() {
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+
+// Canlı Hava Durumu Çekme (Open-Meteo API)
+async function fetchWeather() {
+  const lat = 39.8936;
+  const lon = 41.2758;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe/Istanbul`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    const container = document.getElementById('forecast-container');
+    container.innerHTML = '';
+
+    for (let i = 0; i < 7; i++) {
+      const dateStr = data.daily.time[i];
+      const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
+      const minTemp = Math.round(data.daily.temperature_2m_min[i]);
+      const weatherCode = data.daily.weathercode[i];
+
+      const dateObj = new Date(dateStr);
+      const dayName = dateObj.toLocaleDateString('tr-TR', { weekday: 'short', month: 'numeric', day: 'numeric' });
+
+      let weatherIcon = '☀️';
+      if (weatherCode >= 1 && weatherCode <= 3) weatherIcon = '⛅';
+      else if (weatherCode >= 51 && weatherCode <= 67) weatherIcon = '🌧️';
+      else if (weatherCode >= 71 && weatherCode <= 77) weatherIcon = '🌨️'; // Kar yağışı
+      else if (weatherCode >= 95) weatherIcon = '⚡';
+
+      const dayHtml = `
+        <div class="forecast-day">
+          <span class="date">${dayName}</span>
+          <div style="font-size: 1.2rem; margin: 2px 0;">${weatherIcon}</div>
+          <div class="temp"><b>${maxTemp}°</b> / <span style="opacity:0.7">${minTemp}°</span></div>
+        </div>
+      `;
+      container.innerHTML += dayHtml;
+    }
+  } catch (error) {
+    document.getElementById('forecast-container').innerHTML = '<p style="font-size: 0.85rem;">Hava durumu alınamadı.</p>';
+    console.error('Hava durumu hatası:', error);
+  }
+}
+
+fetchWeather();
 
 
 // Dikey kar yağışı
