@@ -21,7 +21,7 @@ html, body {
 
 body {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   color: var(--white);
   font-family: Arial, Helvetica, sans-serif;
   background:
@@ -39,6 +39,26 @@ body {
   z-index: 1;
 }
 
+/* Telefon Sessiz Mod Bildirim Banner'ı */
+#silentAlert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 48, 59, 0.9);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  z-index: 100;
+  display: none;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: opacity 0.5s ease;
+}
+
 .overlay {
   min-height: 100vh;
   position: relative;
@@ -47,7 +67,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 28px 18px 58px;
+  padding: 28px 18px 70px;
   text-align: center;
 }
 
@@ -57,7 +77,7 @@ body {
 }
 
 .eyebrow {
-  margin: 0 0 13px;
+  margin: 0 0 10px;
   font-size: 12px;
   letter-spacing: 5px;
   color: rgba(255,255,255,.76);
@@ -66,7 +86,7 @@ body {
 
 h1 {
   margin: 0;
-  font-size: clamp(29px, 6vw, 58px);
+  font-size: clamp(26px, 5.5vw, 52px);
   line-height: 1.08;
   font-weight: 900;
   letter-spacing: 1px;
@@ -74,9 +94,9 @@ h1 {
 }
 
 .subtitle {
-  margin: 13px 0 24px;
+  margin: 10px 0 18px;
   color: rgba(255,255,255,.83);
-  font-size: clamp(14px, 2.4vw, 18px);
+  font-size: clamp(13px, 2.2vw, 17px);
   letter-spacing: 1.5px;
 }
 
@@ -84,21 +104,21 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
-  margin: 0 auto 20px;
+  gap: 10px;
+  margin: 0 auto 15px;
 }
 
 .unit {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 11px;
+  gap: 10px;
   min-width: 210px;
 }
 
 .number {
   color: var(--red);
-  font-size: clamp(43px, 8vw, 68px);
+  font-size: clamp(38px, 7vw, 62px);
   line-height: 1;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
@@ -108,7 +128,7 @@ h1 {
 .unit-label {
   min-width: 82px;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 2px;
   color: rgba(255,255,255,.83);
 }
@@ -119,15 +139,15 @@ h1 {
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
-  padding: 12px 15px;
-  margin: 18px auto 0;
+  padding: 10px 12px;
+  margin: 12px auto;
   color: #fff;
   text-align: center;
 }
 
 .weather-card h3 {
-  margin: 0 0 10px;
-  font-size: 11px;
+  margin: 0 0 8px;
+  font-size: 10px;
   letter-spacing: 2px;
   color: rgba(255,255,255,.85);
   text-transform: uppercase;
@@ -136,28 +156,28 @@ h1 {
 .forecast-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  gap: 5px;
 }
 
 .forecast-day {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 6px 2px;
+  padding: 5px 2px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .forecast-day .date {
   font-weight: bold;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   opacity: 0.8;
 }
 
 .forecast-day .temp {
-  font-size: 0.85rem;
-  margin-top: 3px;
+  font-size: 0.8rem;
+  margin-top: 2px;
 }
 
 .departed {
@@ -179,50 +199,188 @@ h1 {
 
 .arrival {
   color: rgba(255,255,255,.78);
-  font-size: 15px !important;
-  line-height: 1.7;
+  font-size: 14px !important;
+  line-height: 1.6;
 }
 
-.map-link {
+/* Butonlar Grubu */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.map-link, .expense-btn {
   display: inline-block;
-  margin-top: 24px;
-  padding: 14px 23px;
+  padding: 11px 18px;
   border: 1px solid rgba(255,255,255,.45);
   border-radius: 7px;
   color: white;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   background: rgba(255,255,255,.12);
   backdrop-filter: blur(8px);
   transition: .2s;
+  cursor: pointer;
 }
 
-.map-link:hover {
+.map-link:hover, .expense-btn:hover {
   background: rgba(255,255,255,.23);
   transform: translateY(-2px);
+}
+
+/* Masraf Paneli Modal Stilleri */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.modal-content {
+  background: #101a2b;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 4px;
+  color: rgba(255,255,255,0.8);
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+}
+
+.form-group select option {
+  background: #101a2b;
+  color: white;
+}
+
+.add-expense-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.expense-list {
+  margin-top: 15px;
+  max-height: 150px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 10px;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  padding: 6px 10px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.delete-exp {
+  background: none;
+  border: none;
+  color: #ff303b;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.settlement-summary {
+  margin-top: 15px;
+  background: rgba(0, 255, 128, 0.08);
+  border: 1px solid rgba(0, 255, 128, 0.3);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.settlement-summary h4 {
+  margin: 0 0 8px;
+  color: #00ff80;
+  font-size: 13px;
 }
 
 .sound {
   position: fixed;
   z-index: 4;
-  top: 18px;
-  right: 18px;
+  top: 15px;
+  right: 15px;
   border: 1px solid rgba(255,255,255,.35);
   border-radius: 30px;
-  padding: 9px 13px;
+  padding: 8px 12px;
   color: white;
   background: rgba(0,0,0,.25);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   backdrop-filter: blur(6px);
 }
 
 footer {
   position: fixed;
   z-index: 3;
-  bottom: 13px;
+  bottom: 10px;
   left: 10px;
   right: 10px;
   text-align: center;
@@ -236,21 +394,18 @@ footer {
   50% { transform: translateY(-5px); }
 }
 
-@media (max-height: 650px) {
-  .overlay {
-    padding-top: 20px;
-    padding-bottom: 42px;
-  }
-  .subtitle { margin-bottom: 18px; }
-  .countdown { gap: 7px; }
-  .number {
-    font-size: clamp(36px, 7vh, 54px);
-  }
+@media (max-height: 700px) {
+  body { overflow-y: auto; }
+  .overlay { padding-bottom: 50px; }
+  .content { animation: none; }
 }
 </style>
 </head>
 
 <body>
+
+<!-- Sessiz Mod Uyarısı Banner'ı -->
+<div id="silentAlert">🔕 Ses gelmiyorsa lütfen telefonunuzu sessiz moddan çıkarın!</div>
 
 <canvas id="snow"></canvas>
 
@@ -272,102 +427,242 @@ footer {
     <p class="subtitle">YOLA ÇIKMAYA KALAN SÜRE</p>
 
     <div class="countdown" aria-live="off">
-
       <div class="unit">
         <span class="number" id="days">000</span>
         <span class="unit-label">GÜN</span>
       </div>
-
       <div class="unit">
         <span class="number" id="hours">00</span>
         <span class="unit-label">SAAT</span>
       </div>
-
       <div class="unit">
         <span class="number" id="minutes">00</span>
         <span class="unit-label">DAKİKA</span>
       </div>
-
       <div class="unit">
         <span class="number" id="seconds">00</span>
         <span class="unit-label">SANİYE</span>
       </div>
-
     </div>
 
-    <!-- 6 Günlük Palandöken Hava Durumu Widget Alanı -->
+    <!-- 6 Günlük Hava Durumu Widget Alanı -->
     <div class="weather-card">
       <h3>Palandöken 6 Günlük Hava Durumu</h3>
       <div id="forecast-container" class="forecast-grid">
-        <p style="font-size: 0.8rem; opacity: 0.7; margin: 4px 0; grid-column: span 6;">Yükleniyor...</p>
+        <p style="font-size: 0.75rem; opacity: 0.7; margin: 4px 0; grid-column: span 6;">Yükleniyor...</p>
       </div>
     </div>
 
   </section>
 
   <section class="content departed" id="departedScreen">
-
     <h2>YOLA ÇIKILDI</h2>
-
     <p>İyi yolculuklar! 🚗❄️</p>
-
     <p class="arrival">
       Tahmini varış zamanı<br>
       <strong>20 Mart 2027 · 10:00</strong>
     </p>
 
-    <a
-      class="map-link"
-      href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B1stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      YANDEX HARİTALARDA ROTAYI AÇ
-    </a>
-
+    <div class="action-buttons">
+      <a
+        class="map-link"
+        href="https://yandex.com/maps/?rtext=Ka%C4%9F%C4%B1thane%2C%20%C4%B1stanbul~Paland%C3%B6ken%20Kayak%20Merkezi%2C%20Erzurum&rtt=auto"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        YANDEX HARİTALARDA ROTAYI AÇ
+      </a>
+      <button class="expense-btn" id="openExpenseModal" type="button">
+        💰 MASRAF VE BORÇ HESAPLA
+      </button>
+    </div>
   </section>
 
 </main>
+
+<!-- Masraf Modalı (Açılır Pencere) -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Kastamonu Ski Community - Ortak Bütçe</h3>
+      <button class="close-btn" id="closeExpenseModal">&times;</button>
+    </div>
+
+    <div class="form-group">
+      <label>Harcamayı Yapan Kişi:</label>
+      <select id="expPayer">
+        <option value="Era">Era</option>
+        <option value="Burak">Burak</option>
+        <option value="Burhan">Burhan</option>
+        <option value="Erdem">Erdem</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Harcama Açıklaması (Örn: Benzin, Market):</label>
+      <input type="text" id="expDesc" placeholder="Benzin, Otel, Lift bileti...">
+    </div>
+
+    <div class="form-group">
+      <label>Tutar (TL):</label>
+      <input type="number" id="expAmount" placeholder="0.00">
+    </div>
+
+    <button class="add-expense-btn" id="addExpenseBtn">Harcama Ekle</button>
+
+    <div class="expense-list" id="expenseListContainer">
+      <!-- Eklenen harcamalar buraya listelenecek -->
+    </div>
+
+    <div class="settlement-summary" id="settlementContainer">
+      <h4>Borç / Alacak Özeti</h4>
+      <div id="settlementText">Henüz harcama girilmedi.</div>
+    </div>
+  </div>
+</div>
 
 <footer>
   KASTAMONU SKI COMMUNITY – TÜM HAKLARI SAKLIDIR
 </footer>
 
 <script>
-
 // Çıkış tarihi: 19 Mart 2027, saat 22:00
-const departureTime =
-  new Date("2027-03-19T22:00:00+03:00").getTime();
-
+const departureTime = new Date("2027-03-19T22:00:00+03:00").getTime();
 const $ = id => document.getElementById(id);
 
 function updateCountdown() {
-
   const remaining = departureTime - Date.now();
-
   if (remaining <= 0) {
     $("countdownScreen").style.display = "none";
     $("departedScreen").style.display = "block";
     return;
   }
-
   const totalSeconds = Math.floor(remaining / 1000);
-
-  $("days").textContent =
-    String(Math.floor(totalSeconds / 86400)).padStart(3, "0");
-
-  $("hours").textContent =
-    String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
-
-  $("minutes").textContent =
-    String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-
-  $("seconds").textContent =
-    String(totalSeconds % 60).padStart(2, "0");
+  $("days").textContent = String(Math.floor(totalSeconds / 86400)).padStart(3, "0");
+  $("hours").textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+  $("minutes").textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  $("seconds").textContent = String(totalSeconds % 60).padStart(2, "0");
 }
-
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// Masraf Modalı Kontrolleri
+$("openExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "flex";
+});
+$("closeExpenseModal").addEventListener("click", () => {
+  $("expenseModal").style.display = "none";
+});
+window.addEventListener("click", (e) => {
+  if (e.target === $("expenseModal")) $("expenseModal").style.display = "none";
+});
+
+// Masraf ve Borç Hesaplama Mantığı (LocalStorage destekli - Era, Burak, Burhan, Erdem)
+let expenses = JSON.parse(localStorage.getItem("ski_expenses")) || [];
+
+function renderExpenses() {
+  const container = $("expenseListContainer");
+  container.innerHTML = "";
+  
+  if (expenses.length === 0) {
+    container.innerHTML = '<p style="font-size:11px; opacity:0.6; text-align:center;">Henüz harcama eklenmemiş.</p>';
+    calculateSettlement();
+    return;
+  }
+
+  expenses.forEach((exp, index) => {
+    container.innerHTML += `
+      <div class="expense-item">
+        <span><b>${exp.payer}</b>: ${exp.desc} - <b>${exp.amount} TL</b></span>
+        <button class="delete-exp" onclick="removeExpense(${index})">Sil</button>
+      </div>
+    `;
+  });
+  calculateSettlement();
+}
+
+function addExpense() {
+  const payer = $("expPayer").value;
+  const desc = $("expDesc").value.trim();
+  const amount = parseFloat($("expAmount").value);
+
+  if (!desc || isNaN(amount) || amount <= 0) {
+    alert("Lütfen geçerli bir açıklama ve tutar girin.");
+    return;
+  }
+
+  expenses.push({ payer, desc, amount });
+  localStorage.setItem("ski_expenses", JSON.stringify(expenses));
+  
+  $("expDesc").value = "";
+  $("expAmount").value = "";
+  renderExpenses();
+}
+
+window.removeExpense = function(index) {
+  expenses.splice(index, 1);
+  localStorage.setItem("ski_expenses", JSON.stringify(expenses));
+  renderExpenses();
+}
+
+$("addExpenseBtn").addEventListener("click", addExpense);
+
+function calculateSettlement() {
+  const members = ["Era", "Burak", "Burhan", "Erdem"];
+  let paid = { "Era": 0, "Burak": 0, "Burhan": 0, "Erdem": 0 };
+  let totalSpent = 0;
+
+  expenses.forEach(e => {
+    if (paid[e.payer] !== undefined) {
+      paid[e.payer] += e.amount;
+      totalSpent += e.amount;
+    }
+  });
+
+  if (expenses.length === 0) {
+    $("settlementText").innerHTML = "Henüz harcama girilmedi.";
+    return;
+  }
+
+  const perPerson = totalSpent / 4;
+  let balances = [];
+
+  members.forEach(m => {
+    balances.push({ name: m, diff: paid[m] - perPerson });
+  });
+
+  let debtors = balances.filter(b => b.diff < -0.01).sort((a,b) => a.diff - b.diff);
+  let creditors = balances.filter(b => b.diff > 0.01).sort((a,b) => b.diff - a.diff);
+
+  let resultHtml = `<b>Toplam Harcama:</b> ${totalSpent.toFixed(2)} TL (Kişi başı: ${perPerson.toFixed(2)} TL)<br><br>`;
+  
+  let transactions = [];
+  let dIdx = 0, cIdx = 0;
+
+  while (dIdx < debtors.length && cIdx < creditors.length) {
+    let debtor = debtors[dIdx];
+    let creditor = creditors[cIdx];
+    let amount = Math.min(-debtor.diff, creditor.diff);
+
+    transactions.push(`• <b>${debtor.name}</b> $\rightarrow$ <b>${creditor.name}</b>: ${amount.toFixed(2)} TL ödemeli.`);
+
+    debtor.diff += amount;
+    creditor.diff -= amount;
+
+    if (Math.abs(debtor.diff) < 0.01) dIdx++;
+    if (Math.abs(creditor.diff) < 0.01) cIdx++;
+  }
+
+  if (transactions.length === 0) {
+    resultHtml += "Herkes eşit harcamış, borç/alacak yok! 🎉";
+  } else {
+    resultHtml += transactions.join("<br>");
+  }
+
+  $("settlementText").innerHTML = resultHtml;
+}
+
+renderExpenses();
 
 
 // Canlı 6 Günlük Hava Durumu Çekme (Open-Meteo API)
@@ -395,44 +690,34 @@ async function fetchWeather() {
       let weatherIcon = '☀️';
       if (weatherCode >= 1 && weatherCode <= 3) weatherIcon = '⛅';
       else if (weatherCode >= 51 && weatherCode <= 67) weatherIcon = '🌧️';
-      else if (weatherCode >= 71 && weatherCode <= 77) weatherIcon = '🌨️'; // Kar yağışı
+      else if (weatherCode >= 71 && weatherCode <= 77) weatherIcon = '🌨️';
       else if (weatherCode >= 95) weatherIcon = '⚡';
 
       const dayHtml = `
         <div class="forecast-day">
           <span class="date">${dayName}</span>
-          <div style="font-size: 1.1rem; margin: 2px 0;">${weatherIcon}</div>
+          <div style="font-size: 1rem; margin: 2px 0;">${weatherIcon}</div>
           <div class="temp"><b>${maxTemp}°</b>/<span style="opacity:0.7">${minTemp}°</span></div>
         </div>
       `;
       container.innerHTML += dayHtml;
     }
   } catch (error) {
-    document.getElementById('forecast-container').innerHTML = '<p style="font-size: 0.8rem; grid-column: span 6;">Hava durumu alınamadı.</p>';
-    console.error('Hava durumu hatası:', error);
+    document.getElementById('forecast-container').innerHTML = '<p style="font-size: 0.75rem; grid-column: span 6;">Hava durumu alınamadı.</p>';
   }
 }
-
 fetchWeather();
 
 
-// Dikey kar yağışı
-
+// Kar Yağışı Efekti
 const canvas = $("snow");
 const ctx = canvas.getContext("2d");
-
 let flakes = [];
 
 function resizeSnow() {
-
   canvas.width = window.innerWidth * devicePixelRatio;
   canvas.height = window.innerHeight * devicePixelRatio;
-
-  ctx.setTransform(
-    devicePixelRatio, 0, 0,
-    devicePixelRatio, 0, 0
-  );
-
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
   flakes = Array.from(
     { length: Math.min(150, Math.floor(window.innerWidth / 7)) },
     () => ({
@@ -446,28 +731,18 @@ function resizeSnow() {
 }
 
 function snow() {
-
-  ctx.clearRect(
-    0, 0,
-    window.innerWidth,
-    window.innerHeight
-  );
-
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
   for (const f of flakes) {
-
     ctx.beginPath();
     ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
     ctx.fill();
-
     f.y += f.speed;
-
     if (f.y > window.innerHeight + 5) {
       f.y = -5;
       f.x = Math.random() * window.innerWidth;
     }
   }
-
   requestAnimationFrame(snow);
 }
 
@@ -476,26 +751,20 @@ resizeSnow();
 snow();
 
 
-// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi (Safari & Mobil Uyumlu)
+// Güçlü ve Fırtınalı Dağ Rüzgârı Sesi, 3 Saniyelik Sessiz Mod Uyarısı
 let audioContext, windSource, windGain, lfo, lfoGain, soundOn = false;
+let alertTimeout;
 
 $("soundButton").addEventListener("click", async () => {
-
   try {
-
     if (!audioContext) {
-
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       audioContext = new AudioContextClass();
 
       const bufferSize = audioContext.sampleRate * 5;
-      const buffer = audioContext.createBuffer(
-        1, bufferSize, audioContext.sampleRate
-      );
-
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
       const data = buffer.getChannelData(0);
 
-      // Daha yoğun ve hırçın rüzgâr gürültüsü
       for (let i = 0; i < bufferSize; i++) {
         data[i] = (Math.random() * 2 - 1) * 0.8;
       }
@@ -504,17 +773,15 @@ $("soundButton").addEventListener("click", async () => {
       windSource.buffer = buffer;
       windSource.loop = true;
 
-      // Fırtına karakteri için filtre frekansını biraz açtık ve rezonans ekledik
       const filter = audioContext.createBiquadFilter();
       filter.type = "lowpass";
       filter.frequency.value = 320; 
       filter.Q.value = 4.5;
 
-      // Güçlü rüzgâr dalgalanmaları (şiddetli fırtına etkisi için LFO)
       lfo = audioContext.createOscillator();
-      lfo.frequency.value = 0.22; // Dalgalanma hızı
+      lfo.frequency.value = 0.22;
       lfoGain = audioContext.createGain();
-      lfoGain.gain.value = 180; // Geniş dalgalanma aralığı
+      lfoGain.gain.value = 180;
 
       lfo.connect(lfoGain);
       lfoGain.connect(filter.frequency);
@@ -536,25 +803,30 @@ $("soundButton").addEventListener("click", async () => {
 
     soundOn = !soundOn;
 
-    // Fırtına ses seviyesi daha yüksek ve belirgin hale getirildi
     windGain.gain.setTargetAtTime(
       soundOn ? 0.65 : 0, 
       audioContext.currentTime,
       0.3
     );
 
-    $("soundButton").textContent =
-      soundOn ? "♫ Sesi kapat" : "♫ Sesi aç";
+    $("soundButton").textContent = soundOn ? "♫ Sesi kapat" : "♫ Sesi aç";
+
+    if (soundOn) {
+      const alertBox = $("silentAlert");
+      alertBox.style.display = "block";
+      alertBox.style.opacity = "1";
+
+      clearTimeout(alertTimeout);
+      alertTimeout = setTimeout(() => {
+        alertBox.style.opacity = "0";
+        setTimeout(() => { alertBox.style.display = "none"; }, 500);
+      }, 3000);
+    }
 
   } catch (e) {
-
-    $("soundButton").textContent = "Ses kullanılamıyor";
-    console.error("Fırtına ses hatası:", e);
-
+    $("soundButton").textContent = "Ses açılamadı";
   }
-
 });
-
 </script>
 
 </body>
